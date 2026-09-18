@@ -1,0 +1,1046 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TrapScan Web Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0A0A0A;
+      --orange: #F97316;
+      --surface: #111111;
+      --surface-2: #1A1A1A;
+      --border: #222222;
+      --border-2: #333333;
+      --text: #F5F5F5;
+      --text-2: #A1A1AA;
+      --text-3: #71717A;
+      --green: #639922;
+      --red: #E24B4A;
+      --purple: #534AB7;
+      --amber: #EF9F27;
+      --teal: #1D9E75;
+      --pink: #D4537E;
+      --darker: #0D0D0D;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { min-height: 100vh; }
+    a { color: inherit; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    .app { min-height: 100vh; background: linear-gradient(180deg, #111 0%, #0A0A0A 100%); }
+    .judge-bar {
+      width: 100%;
+      background: #1a1400;
+      border-bottom: 1px solid #EAB308;
+      padding: 10px 24px;
+      text-align: center;
+      font-size: 13px;
+      color: #EAB308;
+    }
+    .header {
+      position: sticky; top: 0; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding: 18px 24px;
+      border-bottom: 1px solid rgba(34,34,34,0.9);
+      background: rgba(10,10,10,0.96);
+      backdrop-filter: blur(14px);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand-mark {
+      width: 28px; height: 28px; flex: 0 0 auto;
+      object-fit: contain;
+    }
+    .brand-title-wrap { display: flex; align-items: center; gap: 10px; min-width: 0; flex-wrap: wrap; }
+    .brand-title { font-size: 18px; font-weight: 800; letter-spacing: 0.2px; }
+    .badge {
+      padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(249,115,22,0.35);
+      background: rgba(249,115,22,0.12); color: #FFD7B8; font-size: 12px; font-weight: 700;
+    }
+    .back-link {
+      color: var(--text-2); text-decoration: none; font-size: 14px; font-weight: 500;
+      transition: color .2s ease;
+    }
+    .back-link:hover { color: var(--orange); }
+
+    .hero {
+      max-width: 680px; margin: 0 auto; padding: 60px 24px 20px;
+    }
+    h1 {
+      font-size: 32px; line-height: 1.1; letter-spacing: -0.03em; margin: 0;
+      font-weight: 300;
+    }
+    .subtext { margin-top: 16px; font-size: 16px; line-height: 1.65; color: var(--text-2); }
+
+    .input-row { display: flex; align-items: center; gap: 12px; margin-top: 32px; }
+    .url-input {
+      flex: 1; height: 52px; border-radius: 8px; border: 1px solid var(--border-2);
+      background: var(--surface-2); color: var(--text); padding: 0 16px; font-size: 15px; outline: none;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    .url-input:focus { border-color: rgba(249,115,22,0.7); box-shadow: 0 0 0 3px rgba(249,115,22,0.12); }
+    .scan-btn {
+      height: 52px; padding: 0 28px; border: 0; border-radius: 8px; background: var(--orange);
+      color: white; font-size: 15px; font-weight: 600; box-shadow: 0 10px 24px rgba(249,115,22,0.16);
+      transition: transform .15s ease, filter .2s ease; white-space: nowrap;
+    }
+    .scan-btn:hover { transform: translateY(-1px); filter: brightness(1.03); }
+    .scan-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+    .demo-picks { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .demo-tip { margin-top: 12px; font-size: 13px; color: var(--text-3); line-height: 1.5; }
+    .demo-label { font-size: 12px; color: var(--text-3); margin-right: 4px; }
+    .demo-pill {
+      background: transparent; border: 1px solid var(--border-2); color: var(--text-3);
+      padding: 6px 14px; border-radius: 999px; font-size: 12px; transition: all .2s ease;
+    }
+    .demo-pill:hover { border-color: var(--orange); color: var(--orange); }
+
+    .results-wrap {
+      max-width: 860px; margin: 0 auto; padding: 0 24px 64px;
+      display: none;
+    }
+    .results-wrap.is-visible { display: block; }
+    .card {
+      background: rgba(17,17,17,0.95); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow);
+    }
+    .loading-card, .error-card { padding: 28px; }
+    .loading-center {
+      text-align: center; display: grid; place-items: center; gap: 14px; min-height: 210px;
+    }
+    .pulse-shield {
+      width: 52px; height: 52px; color: var(--orange); animation: pulse 1.8s infinite ease-in-out;
+    }
+    .loading-title { font-size: 16px; font-weight: 600; }
+    .loading-steps { display: grid; gap: 8px; color: var(--text-3); font-size: 13px; }
+    .loading-step {
+      opacity: .35; transition: opacity .2s ease, color .2s ease, transform .2s ease;
+    }
+    .loading-step.is-active { opacity: 1; color: var(--text-2); transform: translateY(-1px); }
+    .loading-step.is-done { opacity: 1; color: #D8D8D8; }
+    .progress {
+      width: 240px; height: 8px; border-radius: 999px; border: 1px solid #2b2b2b; overflow: hidden; background: #0f0f0f;
+      margin-top: 8px;
+    }
+    .progress span {
+      display: block; width: 45%; height: 100%; background: linear-gradient(90deg, transparent, var(--orange), transparent);
+      animation: slide 1.3s infinite ease-in-out;
+    }
+
+    .error-card { border-color: rgba(226,75,74,0.35); background: rgba(17,17,17,0.95); }
+    .error-title { font-size: 18px; font-weight: 700; color: #FFC1C0; }
+    .error-message { margin-top: 10px; color: var(--text-2); line-height: 1.6; }
+    .error-list { margin: 16px 0 0; padding-left: 18px; color: #D8D8D8; line-height: 1.7; }
+
+    .results { display: grid; gap: 24px; }
+    .top-card { padding: 20px; display: flex; gap: 18px; align-items: center; }
+    .score-circle {
+      width: 80px; height: 80px; border-radius: 50%; border: 6px solid var(--orange);
+      display: grid; place-items: center; flex: 0 0 auto; background: radial-gradient(circle at center, rgba(255,255,255,.06), rgba(255,255,255,.02));
+    }
+    .score-inner {
+      width: 56px; height: 56px; border-radius: 50%; background: #101010; display: grid; place-items: center;
+      font-size: 32px; font-weight: 600; line-height: 1;
+    }
+    .meta { min-width: 0; flex: 1; }
+    .risk-label { font-size: 12px; font-weight: 800; letter-spacing: .18em; margin-bottom: 6px; }
+    .meta-url { font-size: 14px; color: var(--text-3); word-break: break-word; line-height: 1.5; }
+    .meta-time { margin-top: 6px; color: var(--text-3); font-size: 13px; }
+    .action-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+    .ghost-btn, .copy-btn {
+      height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid #2c2c2c; background: #151515; color: #EDEDED;
+      font-size: 12px; font-weight: 600;
+    }
+    .ghost-btn:hover, .copy-btn:hover { border-color: rgba(249,115,22,0.45); color: #fff; }
+    .copy-btn.copied { border-color: rgba(99,153,34,0.45); color: #D6F3A9; }
+
+    .section-title { font-size: 13px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #D7D7D7; }
+    .findings-list { margin-top: 14px; display: grid; gap: 12px; }
+    .finding-card {
+      background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 16px;
+    }
+    .finding-top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+    .pill-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .category-pill, .score-badge {
+      display: inline-flex; align-items: center; justify-content: center; border-radius: 999px; font-weight: 700;
+    }
+    .category-pill { padding: 5px 8px; font-size: 11px; color: white; }
+    .score-badge { padding: 5px 8px; font-size: 12px; min-width: 48px; background: #111; color: #fff; border: 1px solid #2b2b2b; }
+    .finding-desc { margin-top: 8px; font-size: 14px; line-height: 1.6; color: var(--text-2); }
+    .snippet {
+      margin-top: 12px; background: var(--darker); border-left: 3px solid var(--orange); border-radius: 0 6px 6px 0;
+      padding: 10px 14px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 12px;
+      color: #d8d8d8; white-space: pre-wrap; word-break: break-word;
+    }
+    .damage { margin-top: 8px; font-size: 13px; color: var(--text-3); line-height: 1.55; }
+    .safe-card {
+      display: grid; place-items: center; text-align: center; padding: 28px 20px; gap: 10px;
+    }
+    .safe-circle {
+      width: 54px; height: 54px; border-radius: 50%; background: rgba(99,153,34,0.14); color: #C7F08B; display: grid; place-items: center; font-size: 24px; font-weight: 700;
+    }
+    .safe-title { font-size: 18px; font-weight: 700; }
+    .safe-sub { color: var(--text-2); }
+    .share-row {
+      border-top: 1px solid var(--border); padding-top: 20px; margin-top: 24px; display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap;
+    }
+    .share-left { display: grid; gap: 8px; }
+    .share-label { font-size: 13px; color: #D8D8D8; font-weight: 600; }
+    .share-links { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .install-link { color: var(--orange); text-decoration: none; font-size: 13px; font-weight: 600; }
+    .install-link:hover { text-decoration: underline; }
+
+    footer {
+      padding: 40px 24px 44px; text-align: center; color: var(--text-3); font-size: 13px; line-height: 1.6;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: .9; }
+      50% { transform: scale(1.07); opacity: 1; }
+    }
+    @keyframes slide {
+      from { transform: translateX(-100%); }
+      to { transform: translateX(260%); }
+    }
+
+    @media (max-width: 720px) {
+      .header { padding: 14px 16px; }
+      .hero { padding: 40px 16px 12px; }
+      .results-wrap { padding: 0 16px 56px; }
+      h1 { font-size: 28px; }
+      .input-row { flex-direction: column; align-items: stretch; }
+      .scan-btn { width: 100%; }
+      .top-card { align-items: flex-start; }
+      .share-row { align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="judge-bar">🔬 Live Demo — Try the 4 poisoned pages below to see TrapScan catch real AI Agent Traps in action</div>
+    <header class="header">
+      <div class="brand">
+        <img class="brand-mark" src="./logo/trapscan-mark.png" alt="TrapScan logo" />
+        <div class="brand-title-wrap">
+          <div class="brand-title">TrapScan</div>
+          <div class="badge">Web Demo</div>
+        </div>
+      </div>
+      <a class="back-link" href="/" target="_blank" rel="noreferrer">← Back to TrapScan</a>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h1>Scan any URL for AI Agent Traps</h1>
+        <div class="subtext">
+          Enter any public URL. TrapScan fetches the page server-side, runs 6 detection algorithms, and uses Gemma 4 AI to classify every threat found.
+        </div>
+
+        <div class="input-row">
+          <input id="urlInput" class="url-input" type="url" placeholder="https://example.com" autocomplete="off" spellcheck="false" />
+          <button id="scanBtn" class="scan-btn">Scan →</button>
+        </div>
+
+        <div class="demo-tip">
+          Tip: The demo pages below contain deliberately embedded adversarial content. Real pages may also trigger findings.
+        </div>
+
+        <div class="demo-picks">
+          <div class="demo-label">Try a demo poisoned page:</div>
+          <button class="demo-pill" data-demo="content-injection">Content Injection demo</button>
+          <button class="demo-pill" data-demo="behavioural-control">Behavioural Control demo</button>
+          <button class="demo-pill" data-demo="semantic-manipulation">Semantic Manipulation demo</button>
+          <button class="demo-pill" data-demo="cognitive-state">Cognitive State demo</button>
+        </div>
+      </section>
+
+      <section id="resultsWrap" class="results-wrap">
+        <div id="statusCard" class="card loading-card">
+          <div class="loading-center">
+            <svg class="pulse-shield" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 2l8 4v6c0 5.2-3.4 9.9-8 10-4.6-.1-8-4.8-8-10V6l8-4Z" stroke="currentColor" stroke-width="1.7"/>
+              <path d="M8.5 12.3l2.3 2.3 4.9-5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="loading-title">Scanning...</div>
+            <div class="loading-steps">
+              <div id="step1" class="loading-step is-active">Fetching page...</div>
+              <div id="step2" class="loading-step">Running detection...</div>
+              <div id="step3" class="loading-step">AI analysis...</div>
+            </div>
+            <div class="progress"><span></span></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      Based on Google DeepMind AI Agent Traps (Franklin et al., 2025)<br>
+      · Powered by Gemma 4 · Made with Gemma 4
+    </footer>
+  </div>
+
+  <script>
+    const GEMINI_API_KEY = "YOUR_KEY_HERE";
+    const GEMINI_MODEL = "gemma-4-26b-a4b-it";
+    const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com";
+    const API_SCAN_ENDPOINT = "/api/scan";
+
+    const THREAT_CATEGORIES = {
+      CONTENT_INJECTION: { label: "Content Injection", color: "#E24B4A" },
+      SEMANTIC_MANIPULATION: { label: "Semantic Manipulation", color: "#EF9F27" },
+      COGNITIVE_STATE: { label: "Cognitive State Attack", color: "#534AB7" },
+      BEHAVIOURAL_CONTROL: { label: "Behavioural Control", color: "#D85A30" },
+      SYSTEMIC_TRAP: { label: "Systemic Trap", color: "#1D9E75" },
+      HUMAN_LOOP: { label: "Human-in-the-Loop", color: "#D4537E" }
+    };
+
+    const RISK_LEVELS = {
+      SAFE: { score: [0, 2], label: "Safe", color: "#639922" },
+      LOW: { score: [3, 4], label: "Low Risk", color: "#EF9F27" },
+      MEDIUM: { score: [5, 6], label: "Suspicious", color: "#D85A30" },
+      HIGH: { score: [7, 8], label: "Dangerous", color: "#E24B4A" },
+      CRITICAL: { score: [9, 10], label: "Critical Trap", color: "#A32D2D" }
+    };
+
+    const DEMO_URLS = {
+      "content-injection": {
+        displayUrl: "https://trap-scan.vercel.app/demo-pages/content-injection.html",
+        scanUrl: "https://trap-scan.vercel.app/demo-pages/content-injection.html"
+      },
+      "behavioural-control": {
+        displayUrl: "https://trap-scan.vercel.app/demo-pages/behavioural-control.html",
+        scanUrl: "https://trap-scan.vercel.app/demo-pages/behavioural-control.html"
+      },
+      "semantic-manipulation": {
+        displayUrl: "https://trap-scan.vercel.app/demo-pages/semantic-manipulation.html",
+        scanUrl: "https://trap-scan.vercel.app/demo-pages/semantic-manipulation.html"
+      },
+      "cognitive-state": {
+        displayUrl: "https://trap-scan.vercel.app/demo-pages/cognitive-state.html",
+        scanUrl: "https://trap-scan.vercel.app/demo-pages/cognitive-state.html"
+      }
+    };
+
+    const urlInput = document.getElementById('urlInput');
+    const scanBtn = document.getElementById('scanBtn');
+    const resultsWrap = document.getElementById('resultsWrap');
+    const statusCard = document.getElementById('statusCard');
+
+    let loadingTimers = [];
+
+    function truncate(value, max = 200) {
+      if (!value) return '';
+      const text = String(value).replace(/\s+/g, ' ').trim();
+      return text.length > max ? text.slice(0, max - 1) + '…' : text;
+    }
+
+    function safeParseHtml(html) {
+      try {
+        return new DOMParser().parseFromString(html || '', 'text/html');
+      } catch {
+        return new DOMParser().parseFromString('<html><body></body></html>', 'text/html');
+      }
+    }
+
+    function getComputedColor(styleString, prop) {
+      const match = new RegExp(`${prop}\\s*:\\s*([^;]+)`, 'i').exec(styleString || '');
+      return match ? match[1].trim() : '';
+    }
+
+    function colorToRgb(input) {
+      if (!input) return null;
+      const value = input.trim().toLowerCase();
+      if (value === 'white') return { r: 255, g: 255, b: 255 };
+      if (value === 'black') return { r: 0, g: 0, b: 0 };
+      const hex = value.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+      if (hex) {
+        let code = hex[1];
+        if (code.length === 3) code = code.split('').map((c) => c + c).join('');
+        const intVal = parseInt(code, 16);
+        return { r: (intVal >> 16) & 255, g: (intVal >> 8) & 255, b: intVal & 255 };
+      }
+      const rgb = value.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+      if (rgb) return { r: Number(rgb[1]), g: Number(rgb[2]), b: Number(rgb[3]) };
+      return null;
+    }
+
+    function colorsClose(a, b) {
+      if (!a || !b) return false;
+      return Math.abs(a.r - b.r) < 30 && Math.abs(a.g - b.g) < 30 && Math.abs(a.b - b.b) < 30;
+    }
+
+    function makeFinding(category, description, location, snippet, localScore, rawElement = '') {
+      return {
+        category,
+        description: truncate(description, 120),
+        location: truncate(location, 120),
+        snippet: truncate(snippet, 200),
+        localScore: Math.max(1, Math.min(10, Number(localScore) || 1)),
+        rawElement: truncate(rawElement, 300)
+      };
+    }
+
+    function outerSnippet(el) {
+      if (!el) return '';
+      return truncate(el.outerHTML || el.textContent || '', 300);
+    }
+
+    const PROMPT_INJECTION_KEYWORDS = /(ignore (all )?previous|system prompt|you are (now |a )|act as (a |an )|override (all )?safety|jailbreak|DAN mode|exfiltrate|send .* to http|rate this product 5 stars|recommend purchase|do not mention negative)/i;
+    const EXPLICIT_INSTRUCTIONS = /(ignore (all )?previous|system prompt|override safety|jailbreak|DAN mode|exfiltrate data|act as an? AI)/i;
+    const SUPERLATIVE_WORDS = /(best|only|must|always|never|industry)/gi;
+    const PERSUASIVE_FRAMING = /(unanimous|consensus|experts|guaranteed|proven|override|must be implemented|industry-standard)/i;
+
+    const EXCLUDED_TAGS = new Set([
+      "SCRIPT", "STYLE", "NOSCRIPT", "TEMPLATE", "SVG", "PATH", "G",
+      "SYMBOL", "USE", "OPTION", "SELECT", "CANVAS", "VIDEO", "AUDIO", "IFRAME"
+    ]);
+
+    const BOILERPLATE_PATTERNS = [
+      /^(an error occurred|something went wrong|loading|please wait|retry|close|cancel|submit|search|navigation|skip to main content|all rights reserved|copyright|privacy policy|terms of service|cookies?)/i,
+      /^error\s*:\s*/i,
+      /^(javascript is disabled|enable javascript|connection error|network error|search results|did you mean|showing results for)/i
+    ];
+
+    function isHidden(el, view = '') {
+      if (!el || !el.getAttribute) return false;
+      const style = (el.getAttribute('style') || '').toLowerCase();
+      const hiddenAttr = el.hasAttribute('hidden');
+      const classList = (el.className || '').toString().toLowerCase();
+      const hasDisplayNone = /display\s*:\s*none/.test(style) || /display\s*:\s*none/.test(view);
+      const hasVisibilityHidden = /visibility\s*:\s*hidden/.test(style) || /visibility\s*:\s*hidden/.test(view);
+      const offscreen = /position\s*:\s*absolute/i.test(style) && /(left|top)\s*:\s*-[1-9]\d{2,}/i.test(style);
+      return hiddenAttr || hasDisplayNone || hasVisibilityHidden || offscreen || classList.includes('hidden');
+    }
+
+    function hasHiddenAncestor(el) {
+      let curr = el.parentElement;
+      while (curr && curr.tagName !== 'BODY' && curr.tagName !== 'HTML') {
+        const style = curr.getAttribute ? (curr.getAttribute('style') || '').toLowerCase() : '';
+        if (isHidden(curr, style)) return true;
+        curr = curr.parentElement;
+      }
+      return false;
+    }
+
+    function getHiddenTextBlocks(doc) {
+      const blocks = [];
+      const elements = Array.from(doc.querySelectorAll('body *'));
+      for (const el of elements) {
+        if (EXCLUDED_TAGS.has(el.tagName.toUpperCase())) continue;
+        if (hasHiddenAncestor(el)) continue;
+
+        const text = (el.textContent || '').replace(/\s+/g, ' ').trim();
+        if (!text) continue;
+
+        const style = el.getAttribute('style') || '';
+        const hidden = isHidden(el, style);
+
+        if (hidden) blocks.push({ el, text, style });
+      }
+      return blocks;
+    }
+
+    function extractMetaContent(doc) {
+      return Array.from(doc.querySelectorAll('meta[name], meta[property]')).map((meta) => ({
+        name: meta.getAttribute('name') || meta.getAttribute('property') || 'meta',
+        content: meta.getAttribute('content') || ''
+      }));
+    }
+
+    function similarity(a, b) {
+      if (a === b) return 1;
+      const shorter = a.length < b.length ? a : b;
+      const longer = a.length < b.length ? b : a;
+      if (!shorter.length) return 0;
+      let same = 0;
+      const shorterWords = shorter.split(/\s+/);
+      const longerWords = new Set(longer.split(/\s+/));
+      for (const word of shorterWords) if (longerWords.has(word)) same += 1;
+      return same / Math.max(shorterWords.length, 1);
+    }
+
+    function detectLocalPatterns(html) {
+      const doc = safeParseHtml(html || '');
+      const findings = [];
+      const hiddenBlocks = getHiddenTextBlocks(doc);
+
+      for (const { el, text: blockText, style } of hiddenBlocks) {
+        if (blockText.length > 20 && (PROMPT_INJECTION_KEYWORDS.test(blockText) || (EXPLICIT_INSTRUCTIONS.test(blockText) && /system|ignore|override|jailbreak|exfiltrate/i.test(blockText)))) {
+          if (!BOILERPLATE_PATTERNS.some((b) => b.test(blockText))) {
+            findings.push(makeFinding('CONTENT_INJECTION', 'Hidden text contains instruction-like language', el.tagName ? el.tagName.toLowerCase() : 'hidden element', blockText, 8, outerSnippet(el)));
+          }
+        }
+
+        const bg = getComputedColor(style, 'background-color') || getComputedColor(style, 'background');
+        const color = getComputedColor(style, 'color');
+        const bgRgb = colorToRgb(bg);
+        const fgRgb = colorToRgb(color);
+        if (bgRgb && fgRgb && colorsClose(bgRgb, fgRgb) && blockText.length > 15) {
+          if (!BOILERPLATE_PATTERNS.some((b) => b.test(blockText))) {
+            findings.push(makeFinding('CONTENT_INJECTION', 'Text color closely matches the background color', el.tagName ? el.tagName.toLowerCase() : 'hidden element', blockText, 7, outerSnippet(el)));
+          }
+        }
+
+        if (/position\s*:\s*absolute/i.test(style) && (/(left|top)\s*:\s*-[1-9]\d{2,}/i.test(style) || /left\s*:\s*-\d{4,}/i.test(style))) {
+          if (blockText.length > 15 && (PROMPT_INJECTION_KEYWORDS.test(blockText) || /system|ignore|override|act as|exfiltrate/i.test(blockText))) {
+            findings.push(makeFinding('CONTENT_INJECTION', 'Absolutely positioned text is pushed far off-screen', `${el.tagName.toLowerCase()}[style]`, blockText, 7, outerSnippet(el)));
+          }
+        }
+      }
+
+      for (const el of Array.from(doc.querySelectorAll('[aria-label]'))) {
+        const aria = el.getAttribute('aria-label') || '';
+        if (aria.length > 40 && PROMPT_INJECTION_KEYWORDS.test(aria)) {
+          findings.push(makeFinding('CONTENT_INJECTION', 'Long aria-label contains hidden instructions', `${el.tagName.toLowerCase()}[aria-label]`, aria, 8, outerSnippet(el)));
+        }
+      }
+
+      const commentRegex = /<!--([\s\S]*?)-->/g;
+      let commentMatch;
+      while ((commentMatch = commentRegex.exec(html))) {
+        const fullComment = commentMatch[0];
+        const commentBody = commentMatch[1] || '';
+
+        if (/css-build|shady|polymer|license|copyright|webpack|vite|rollup|turbopack|github|owasp|wstg|article|comment|author|template|should probably/i.test(commentBody)) {
+          continue;
+        }
+
+        if (PROMPT_INJECTION_KEYWORDS.test(commentBody) || /DAN MODE|exfiltrate|fetch\(|ignore (all )?previous|you are now|system prompt|override safety/i.test(commentBody)) {
+          findings.push(makeFinding('CONTENT_INJECTION', 'HTML comment contains hidden instructions', `HTML comment at char ${commentMatch.index}`, fullComment, 8, truncate(fullComment, 300)));
+        }
+      }
+
+      const phraseCounts = new Map();
+      for (const { text: blockText, el } of hiddenBlocks) {
+        const phrase = blockText.toLowerCase().replace(/\s+/g, ' ').trim();
+        if (phrase.length < 15) continue;
+        if (BOILERPLATE_PATTERNS.some((b) => b.test(phrase))) continue;
+
+        phraseCounts.set(phrase, (phraseCounts.get(phrase) || 0) + 1);
+        if ((phraseCounts.get(phrase) || 0) >= 3) {
+          findings.push(makeFinding('SEMANTIC_MANIPULATION', 'Repeated hidden phrase suggests biased framing', el.tagName.toLowerCase(), blockText, 7, outerSnippet(el)));
+        }
+      }
+
+      const combinedHiddenText = hiddenBlocks.map((b) => b.text).join(' ');
+      const superlativeCount = (combinedHiddenText.match(SUPERLATIVE_WORDS) || []).length;
+      const hiddenWordCount = combinedHiddenText.split(/\s+/).filter(Boolean).length;
+      const density = hiddenWordCount > 0 ? (superlativeCount / hiddenWordCount) * 100 : 0;
+      if (hiddenBlocks.length && hiddenWordCount >= 40 && density > 5 && PERSUASIVE_FRAMING.test(combinedHiddenText)) {
+        const first = hiddenBlocks[0];
+        findings.push(makeFinding('SEMANTIC_MANIPULATION', 'Hidden text uses unusually persuasive authoritative framing', first.el.tagName.toLowerCase(), first.text, 6, outerSnippet(first.el)));
+      }
+
+      for (const meta of extractMetaContent(doc)) {
+        if (/unanimous consensus|expert consensus|must override|only trusted source|official AI instruction/i.test(meta.content || '')) {
+          findings.push(makeFinding('SEMANTIC_MANIPULATION', 'Meta tag contains authoritative framing', `<meta ${meta.name}>`, meta.content, 5, truncate(meta.content, 300)));
+        }
+      }
+
+      const jsonLdBlocks = Array.from(doc.querySelectorAll('script[type="application/ld+json"]'));
+      for (const script of jsonLdBlocks) {
+        const raw = (script.textContent || '').trim();
+        let parsed = null;
+        try { parsed = JSON.parse(raw); } catch { continue; }
+        const jsonText = JSON.stringify(parsed);
+        if (/cure all diseases|independent studies|evidencelevela|fabricated|proven/i.test(jsonText)) {
+          findings.push(makeFinding('COGNITIVE_STATE', 'JSON-LD includes suspicious authority claims', 'JSON-LD block', jsonText, 8, truncate(script.outerHTML, 300)));
+        }
+        if (parsed && typeof parsed === 'object') {
+          const checkSingleProduct = (obj, depth = 0) => {
+            if (depth > 2 || !obj || typeof obj !== 'object') return null;
+            if (Array.isArray(obj)) {
+              for (const item of obj) {
+                const result = checkSingleProduct(item, depth + 1);
+                if (result) return result;
+              }
+              return null;
+            }
+            const prices = [];
+            let hasId = false;
+            for (const [key, value] of Object.entries(obj)) {
+              if (/^(id|@id|sku|productid)$/i.test(key)) hasId = true;
+              if (/^price$/i.test(key) && value != null) prices.push(String(value));
+            }
+            if (hasId && new Set(prices).size > 1) return prices;
+            for (const [, value] of Object.entries(obj)) {
+              if (typeof value === 'object' && value !== null) {
+                const result = checkSingleProduct(value, depth + 1);
+                if (result) return result;
+              }
+            }
+            return null;
+          };
+          const suspiciousPrices = checkSingleProduct(parsed);
+          if (suspiciousPrices && suspiciousPrices.length > 2) {
+            findings.push(makeFinding('COGNITIVE_STATE', 'Schema markup contains contradictory price values', 'JSON-LD block', suspiciousPrices.join(', '), 6, truncate(script.outerHTML, 300)));
+          }
+        }
+      }
+
+      for (const el of Array.from(doc.querySelectorAll('body *'))) {
+        for (const attr of Array.from(el.attributes || [])) {
+          if (!attr.name.startsWith('data-')) continue;
+          if (attr.value.length > 30 && (PROMPT_INJECTION_KEYWORDS.test(attr.value) || /ignore prior context|medical authority|instruction|jailbreak/i.test(attr.value))) {
+            findings.push(makeFinding('COGNITIVE_STATE', 'Data attribute contains instruction-like text', `${el.tagName.toLowerCase()}[${attr.name}]`, attr.value, 7, outerSnippet(el)));
+          }
+        }
+      }
+
+      const jailbreakRegex = /\b(DAN|jailbreak|ignore.{0,20}previous.{0,20}instructions|you are now|act as an? exfiltration|do anything now|pretend.{0,10}you.{0,10}are)\b/gi;
+      const jailbreakMatches = html.match(jailbreakRegex) || [];
+      if (jailbreakMatches.length) {
+        findings.push(makeFinding('BEHAVIOURAL_CONTROL', 'Page contains jailbreak language', 'HTML document', jailbreakMatches.slice(0, 3).join(', '), 8, truncate(jailbreakMatches.join(' | '), 300)));
+      }
+
+      for (const { text: blockText, el } of hiddenBlocks) {
+        if (/fetch\(|XMLHttpRequest|exfiltrate|send .* to/i.test(blockText)) {
+          findings.push(makeFinding('BEHAVIOURAL_CONTROL', 'Hidden element contains exfiltration or request instructions', el.tagName.toLowerCase(), blockText, 9, outerSnippet(el)));
+        }
+      }
+
+      const normalizedHidden = hiddenBlocks
+        .map((b) => b.text.toLowerCase().replace(/\s+/g, ' ').trim())
+        .filter((t) => t.length >= 15 && !BOILERPLATE_PATTERNS.some((b) => b.test(t)));
+
+      const similarGroups = [];
+      for (let i = 0; i < normalizedHidden.length; i += 1) {
+        const base = normalizedHidden[i];
+        let count = 1;
+        for (let j = i + 1; j < normalizedHidden.length; j += 1) {
+          const candidate = normalizedHidden[j];
+          if (candidate === base || similarity(base, candidate) > 0.8) count += 1;
+        }
+        if (count >= 3) similarGroups.push({ base, count });
+      }
+
+      if (similarGroups.length) {
+        findings.push(makeFinding('SYSTEMIC_TRAP', 'Multiple hidden elements repeat near-identical text', 'Repeated hidden divs', similarGroups[0].base, 8, truncate(similarGroups[0].base, 300)));
+      }
+
+      for (const { text: blockText, el } of hiddenBlocks) {
+        if (/(click|approve|confirm|authorize).*(now|immediately|urgent)|captcha/i.test(blockText)) {
+          if (!BOILERPLATE_PATTERNS.some((b) => b.test(blockText))) {
+            findings.push(makeFinding('HUMAN_LOOP', 'Hidden text pressures human approval with urgency', el.tagName.toLowerCase(), blockText, 8, outerSnippet(el)));
+          }
+        }
+        if (/\b\d{1,2}\s*(seconds?|minutes?)\b.*\b(countdown|remaining|left)\b/i.test(blockText)) {
+          findings.push(makeFinding('HUMAN_LOOP', 'Invisible countdown text may induce approval fatigue', el.tagName.toLowerCase(), blockText, 7, outerSnippet(el)));
+        }
+      }
+
+      const categories = Array.from(new Set(findings.map((f) => f.category)));
+      return { findings, detectedCount: findings.length, categories };
+    }
+
+    function getCategoryMeta(categoryKey) {
+      return THREAT_CATEGORIES[categoryKey] || { label: categoryKey, color: '#9AA0A6' };
+    }
+
+    function getRiskLevel(score = 0) {
+      const value = Number(score) || 0;
+      return Object.values(RISK_LEVELS).find((level) => value >= level.score[0] && value <= level.score[1]) || RISK_LEVELS.SAFE;
+    }
+
+    function stripFences(text) {
+      return String(text || '').replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/i, '').trim();
+    }
+
+    function extractJsonCandidate(text) {
+      const cleaned = stripFences(text);
+      const start = cleaned.indexOf('{');
+      const end = cleaned.lastIndexOf('}');
+      if (start === -1 || end === -1 || end <= start) return cleaned;
+      return cleaned.slice(start, end + 1);
+    }
+
+    function extractGoogleResponseText(data) {
+      const parts = Array.isArray(data?.candidates?.[0]?.content?.parts) ? data.candidates[0].content.parts : [];
+      const texts = parts.map((part) => (typeof part?.text === 'string' ? part.text.trim() : '')).filter(Boolean);
+      if (!texts.length) return '';
+      const jsonish = texts.find((text) => text.includes('"overallRiskScore"') || /^\s*\{[\s\S]*\}\s*$/.test(text));
+      return jsonish || texts[texts.length - 1];
+    }
+
+    function buildPrompt(findings, pageContext) {
+      const fullPrompt = `You are TrapScan, an AI security analyzer specializing in detecting "AI Agent Traps" — adversarial content embedded in web pages designed to manipulate, deceive, or exploit AI agents browsing on behalf of users.
+
+Your task: Analyze the suspicious patterns detected on this web page and classify them.
+
+For each finding provided, you must:
+1. Confirm or dismiss it (is this actually suspicious, or a false positive?)
+2. Classify it into one of these exact categories:
+   - CONTENT_INJECTION: Hidden instructions invisible to humans but parsed by AI
+   - SEMANTIC_MANIPULATION: Biased framing to corrupt AI reasoning
+   - COGNITIVE_STATE: Attempts to poison AI memory or knowledge retrieval
+   - BEHAVIOURAL_CONTROL: Direct jailbreak sequences or data exfiltration commands
+   - SYSTEMIC_TRAP: Patterns targeting multiple AI agents simultaneously
+   - HUMAN_LOOP: Social engineering targeting human overseers
+3. Assign a risk score 1-10 (10 = confirmed critical attack)
+4. Write a plain English explanation (max 2 sentences) a non-technical user can understand
+5. Suggest what damage this could cause if an AI agent encountered it
+
+You MUST respond ONLY with a valid JSON object in this exact structure:
+{
+  "overallRiskScore": number (1-10),
+  "overallSummary": string (2-3 sentences for the page overall),
+  "findings": [
+    {
+      "id": number,
+      "confirmed": boolean,
+      "category": string,
+      "riskScore": number,
+      "explanation": string,
+      "potentialDamage": string,
+      "attackVector": string (one of: "hidden_css", "html_comment", "aria_label", "json_ld", "jailbreak_text", "schema_manipulation", "behavioural_command", "social_engineering")
+    }
+  ]
+}
+Do not include any text outside the JSON. Do not use markdown code fences.`;
+
+      const userMessage = `Page URL: ${pageContext?.url || ''}\nPage Title: ${pageContext?.title || ''}\n\nSuspicious patterns detected (${findings.length} total):\n${findings.map((f, i) => `\nFinding #${i + 1}\nCategory: ${f.category}\nLocation: ${f.location}\nSuspicious content: ${f.snippet}\nLocal confidence score: ${f.localScore}/10\nRaw element: ${f.rawElement}\n`).join('\n---\n')}\n\nPage HTML sample (first 3000 chars):\n${pageContext?.truncatedHTML || ''}`;
+
+      return `${fullPrompt}\n\nUser message:\n"""\n${userMessage}\n"""`;
+    }
+
+    async function classifyWithGemini(findings, pageContext) {
+      try {
+        if (!GEMINI_API_KEY || GEMINI_API_KEY === 'YOUR_KEY_HERE') return null;
+        const prompt = buildPrompt(findings, pageContext);
+        const url = `${GEMINI_BASE_URL.replace(/\/$/, '')}/v1beta/models/${GEMINI_MODEL}:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { temperature: 0, maxOutputTokens: 4096, responseMimeType: 'application/json' }
+          })
+        });
+        if (!response.ok) {
+          console.error('Gemini API error', response.status, await response.text());
+          return null;
+        }
+        const data = await response.json();
+        const text = extractGoogleResponseText(data);
+        if (!text) return null;
+        const cleaned = extractJsonCandidate(text);
+        return JSON.parse(cleaned);
+      } catch (error) {
+        console.error('classifyWithGemini failed', error);
+        return null;
+      }
+    }
+
+    async function fetchPage(url) {
+      const response = await fetch(API_SCAN_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data?.error || `Request failed (${response.status})`);
+      return data;
+    }
+
+    function clearLoadingTimers() {
+      loadingTimers.forEach((timer) => clearTimeout(timer));
+      loadingTimers = [];
+    }
+
+    function updateLoadingStep(text) {
+      const step1 = document.getElementById('step1');
+      const step2 = document.getElementById('step2');
+      const step3 = document.getElementById('step3');
+      const mapping = [step1, step2, step3];
+      mapping.forEach((node, index) => {
+        if (!node) return;
+        node.classList.remove('is-active', 'is-done');
+        if (index < 2 && text === node.textContent) node.classList.add('is-active');
+      });
+      if (text === 'Running detection...') {
+        step1?.classList.remove('is-active'); step1?.classList.add('is-done');
+        step2?.classList.add('is-active');
+      } else if (text === 'AI analysis...') {
+        step1?.classList.add('is-done');
+        step2?.classList.remove('is-active'); step2?.classList.add('is-done');
+        step3?.classList.add('is-active');
+      }
+    }
+
+    function showLoading() {
+      clearLoadingTimers();
+      resultsWrap.classList.add('is-visible');
+      resultsWrap.innerHTML = '';
+      resultsWrap.appendChild(statusCard);
+      statusCard.className = 'card loading-card';
+      statusCard.innerHTML = `
+        <div class="loading-center">
+          <svg class="pulse-shield" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 2l8 4v6c0 5.2-3.4 9.9-8 10-4.6-.1-8-4.8-8-10V6l8-4Z" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M8.5 12.3l2.3 2.3 4.9-5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="loading-title">Scanning...</div>
+          <div class="loading-steps">
+            <div id="step1" class="loading-step is-active">Fetching page...</div>
+            <div id="step2" class="loading-step">Running detection...</div>
+            <div id="step3" class="loading-step">AI analysis...</div>
+          </div>
+          <div class="progress"><span></span></div>
+        </div>
+      `;
+      updateLoadingStep('Fetching page...');
+      loadingTimers.push(setTimeout(() => updateLoadingStep('Running detection...'), 1000));
+      loadingTimers.push(setTimeout(() => updateLoadingStep('AI analysis...'), 2000));
+    }
+
+    function showError(message) {
+      clearLoadingTimers();
+      resultsWrap.classList.add('is-visible');
+      resultsWrap.innerHTML = `
+        <div class="card error-card">
+          <div class="error-title">Could not scan this URL</div>
+          <div class="error-message">${escapeHtml(message || 'Unknown error')}</div>
+          <ul class="error-list">
+            <li>CORS or anti-bot protection</li>
+            <li>Private, authenticated, or blocked page</li>
+            <li>Timeout or invalid target URL</li>
+          </ul>
+        </div>
+      `;
+    }
+
+    function escapeHtml(value) {
+      return String(value || '').replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
+    }
+
+    function buildFallback(localFindings) {
+      const maxScore = localFindings.length ? Math.max(...localFindings.map((f) => f.localScore || 1)) : 0;
+      const overallRiskScore = Math.max(0, Math.min(10, Math.round(Math.max(maxScore, localFindings.length ? 2 + localFindings.length : 0))));
+      return {
+        overallRiskScore,
+        overallSummary: localFindings.length
+          ? `Local detection identified ${localFindings.length} suspicious pattern${localFindings.length === 1 ? '' : 's'} without AI classification.`
+          : 'No suspicious patterns were detected by local analysis.',
+        findings: localFindings.map((finding, index) => ({
+          id: index + 1,
+          confirmed: true,
+          category: finding.category,
+          riskScore: finding.localScore,
+          explanation: finding.description,
+          potentialDamage: 'Could mislead an AI agent browsing this page.',
+          attackVector: categoryToAttackVector(finding.category, finding.location, finding.snippet),
+          location: finding.location,
+          snippet: finding.snippet
+        }))
+      };
+    }
+
+    function categoryToAttackVector(category, location, snippet) {
+      const lower = `${location || ''} ${snippet || ''}`.toLowerCase();
+      if (category === 'CONTENT_INJECTION') {
+        if (lower.includes('aria')) return 'aria_label';
+        if (lower.includes('comment')) return 'html_comment';
+        return 'hidden_css';
+      }
+      if (category === 'COGNITIVE_STATE') {
+        if (lower.includes('schema') || lower.includes('json-ld')) return 'json_ld';
+        return 'schema_manipulation';
+      }
+      if (category === 'BEHAVIOURAL_CONTROL') return 'behavioural_command';
+      if (category === 'HUMAN_LOOP') return 'social_engineering';
+      return 'hidden_css';
+    }
+
+    function localizeGeminiFindings(geminiFindings, localFindings) {
+      const localByCategory = new Map(localFindings.map((f) => [f.category, f]));
+      return (Array.isArray(geminiFindings) ? geminiFindings : []).map((finding, index) => {
+        const local = localByCategory.get(finding.category) || localFindings[index] || {};
+        return {
+          id: finding.id || index + 1,
+          confirmed: typeof finding.confirmed === 'boolean' ? finding.confirmed : true,
+          category: finding.category || local.category || 'CONTENT_INJECTION',
+          riskScore: Math.max(1, Math.min(10, Number(finding.riskScore || local.localScore || 1))),
+          explanation: finding.explanation || local.description || '',
+          potentialDamage: finding.potentialDamage || 'Could mislead an AI agent browsing this page.',
+          attackVector: finding.attackVector || categoryToAttackVector(finding.category || local.category, local.location, local.snippet),
+          location: local.location,
+          snippet: local.snippet
+        };
+      });
+    }
+
+    function formatTruncatedUrl(url) {
+      return truncate(url || '', 76);
+    }
+
+    function downloadReport(result, pageContext) {
+      const findings = result.findings || [];
+      const html = `<!doctype html><html><head><meta charset="utf-8"><title>TrapScan Report</title><style>body{font-family:Inter,Arial,sans-serif;padding:24px;background:#0A0A0A;color:#F5F5F5}h1,h2{margin:0 0 12px}p,li{color:#A1A1AA;line-height:1.6}.card{background:#111;border:1px solid #222;border-radius:12px;padding:16px;margin:16px 0}.pill{display:inline-block;padding:4px 8px;border-radius:999px;margin-right:8px;color:#fff;font-size:12px}</style></head><body><h1>TrapScan Report</h1><div class="card"><h2>${escapeHtml(pageContext.title || pageContext.url || '')}</h2><p>${escapeHtml(pageContext.url || '')}</p><p>Overall risk: ${escapeHtml(String(result.overallRiskScore ?? 0))}/10</p><p>${escapeHtml(result.overallSummary || '')}</p></div>${findings.map((finding) => `<div class="card"><div><span class="pill" style="background:${escapeHtml(getCategoryMeta(finding.category).color)}">${escapeHtml(getCategoryMeta(finding.category).label)}</span><span class="pill" style="background:#222">${escapeHtml(String(finding.riskScore))}/10</span></div><p>${escapeHtml(finding.explanation || '')}</p><p>${escapeHtml(finding.potentialDamage || '')}</p></div>`).join('')}</body></html>`;
+      const blob = new Blob([html], { type: 'text/html' });
+      const href = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = href;
+      a.download = `trapscan-report-${Date.now()}.html`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(href), 1000);
+    }
+
+    function renderResults(result, localFindings, pageContext) {
+      clearLoadingTimers();
+      const fallback = buildFallback(localFindings);
+      const merged = result && typeof result === 'object' ? {
+        overallRiskScore: Number(result.overallRiskScore ?? fallback.overallRiskScore ?? 0),
+        overallSummary: result.overallSummary || fallback.overallSummary,
+        findings: localizeGeminiFindings(result.findings || fallback.findings, localFindings)
+      } : fallback;
+
+      const risk = getRiskLevel(merged.overallRiskScore);
+      const findings = Array.isArray(merged.findings) ? merged.findings : [];
+      const isSafe = findings.length === 0;
+      const topFindingHtml = isSafe
+        ? `
+          <div class="finding-card safe-card">
+            <div class="safe-circle">✓</div>
+            <div class="safe-title">No adversarial content detected</div>
+            <div class="safe-sub">This page appears safe for AI agent interaction.</div>
+          </div>
+        `
+        : findings.map((finding) => {
+            const meta = getCategoryMeta(finding.category);
+            const pillColor = meta.color;
+            const scoreColor = riskColor(finding.riskScore);
+            return `
+              <div class="finding-card">
+                <div class="finding-top">
+                  <div class="pill-row">
+                    <span class="category-pill" style="background:${pillColor}">${escapeHtml(meta.label)}</span>
+                    <span class="score-badge" style="border-color:${scoreColor}; color:${scoreColor}">${escapeHtml(String(finding.riskScore))}/10</span>
+                  </div>
+                </div>
+                <div class="finding-desc">${escapeHtml(finding.explanation || '')}</div>
+                ${finding.snippet ? `<div class="snippet" style="border-left-color:${pillColor}">${escapeHtml(finding.snippet)}</div>` : ''}
+                ${finding.potentialDamage ? `<div class="damage">⚠️ ${escapeHtml(finding.potentialDamage)}</div>` : ''}
+              </div>
+            `;
+          }).join('');
+
+      resultsWrap.classList.add('is-visible');
+      resultsWrap.innerHTML = `
+        <div class="results">
+          <div class="card top-card">
+            <div class="score-circle" style="border-color:${risk.color}">
+              <div class="score-inner">${Math.round(merged.overallRiskScore || 0)}</div>
+            </div>
+            <div class="meta">
+              <div class="risk-label" style="color:${risk.color}">${escapeHtml(risk.label.toUpperCase())}</div>
+              <div class="meta-url">${escapeHtml(formatTruncatedUrl(pageContext.url || ''))}</div>
+              <div class="meta-time">Scanned just now</div>
+              <div class="action-row">
+                <button id="downloadBtn" class="ghost-btn">Download Report</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="padding:20px;">
+            <div class="section-title">${isSafe ? 'No threats found' : `Threats Detected (${findings.length})`}</div>
+            <div class="findings-list">${topFindingHtml}</div>
+          </div>
+
+          <div class="card" style="padding:20px;">
+            <div class="share-row">
+              <div class="share-left">
+                <div class="share-label">Share this scan:</div>
+                <div class="share-links">
+                  <button id="copyLinkBtn" class="copy-btn">Copy link</button>
+                  <a class="install-link" href="https://trap-scan.vercel.app/" target="_blank" rel="noreferrer">Install extension for automatic scanning →</a>
+                </div>
+              </div>
+              <div style="color:var(--text-3); font-size:13px; line-height:1.5; max-width:360px;">${escapeHtml(merged.overallSummary || '')}</div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      const downloadBtn = document.getElementById('downloadBtn');
+      downloadBtn?.addEventListener('click', () => downloadReport(merged, pageContext));
+      const copyBtn = document.getElementById('copyLinkBtn');
+      copyBtn?.addEventListener('click', async () => {
+        const shareUrl = `${window.location.origin}${window.location.pathname}?url=${encodeURIComponent(pageContext.url || '')}`;
+        try {
+          await navigator.clipboard.writeText(shareUrl);
+          copyBtn.textContent = 'Copied ✓';
+          copyBtn.classList.add('copied');
+          setTimeout(() => {
+            copyBtn.textContent = 'Copy link';
+            copyBtn.classList.remove('copied');
+          }, 1500);
+        } catch {
+          window.prompt('Copy this URL', shareUrl);
+        }
+      });
+    }
+
+    function riskColor(score) {
+      const level = getRiskLevel(score);
+      return level.color;
+    }
+
+    async function runScan(url) {
+      const normalized = String(url || '').trim();
+      if (!/^https?:\/\//i.test(normalized)) {
+        showError('Please enter a valid public URL starting with http:// or https://.');
+        return;
+      }
+
+      showLoading();
+      try {
+        const { html, title } = await fetchPage(normalized);
+        updateLoadingStep('Running detection...');
+        const localFindings = detectLocalPatterns(html);
+        updateLoadingStep('AI analysis...');
+        const geminiResult = await classifyWithGemini(localFindings.findings, {
+          url: normalized,
+          title,
+          truncatedHTML: html.slice(0, 3000)
+        });
+        const finalResult = geminiResult || buildFallback(localFindings.findings);
+        renderResults(finalResult, localFindings.findings, { url: normalized, title });
+        const nextUrl = `${window.location.pathname}?url=${encodeURIComponent(normalized)}`;
+        window.history.replaceState({}, '', nextUrl);
+      } catch (error) {
+        showError(error?.message || 'Failed to scan URL');
+      }
+    }
+
+    function setDemoUrl(key) {
+      const config = DEMO_URLS[key];
+      if (!config) return;
+      urlInput.value = config.displayUrl;
+      runScan(config.scanUrl);
+    }
+
+    scanBtn.addEventListener('click', () => runScan(urlInput.value));
+    urlInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') runScan(urlInput.value);
+    });
+    document.querySelectorAll('.demo-pill').forEach((button) => {
+      button.addEventListener('click', () => setDemoUrl(button.dataset.demo));
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    const urlParam = params.get('url');
+    if (urlParam) {
+      urlInput.value = urlParam;
+      runScan(urlParam);
+    }
+  </script>
+</body>
+</html>

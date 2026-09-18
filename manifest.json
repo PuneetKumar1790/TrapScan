@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "TrapScan — AI Agent Trap Detector",
+  "version": "1.0.0",
+  "description": "Detects adversarial content designed to hijack AI agents browsing the web.",
+  "permissions": ["activeTab", "storage", "scripting", "tabs"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background/service-worker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content/content-script.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup/index.html",
+    "default_icon": {
+      "16": "logo/trapscan-mark.png",
+      "48": "logo/trapscan-mark.png",
+      "128": "logo/trapscan-mark.png"
+    }
+  },
+  "icons": {
+    "16": "logo/trapscan-mark.png",
+    "48": "logo/trapscan-mark.png",
+    "128": "logo/trapscan-mark.png"
+  }
+}

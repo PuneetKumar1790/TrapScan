@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: trapscan-web
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: python3 -m http.server $PORT
+    plan: free
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: VITE_GEMMA_API_KEY
+        # Set this in Render dashboard
+        scope: build
+    routes:
+      - path: /
+        pathPrefix: /
