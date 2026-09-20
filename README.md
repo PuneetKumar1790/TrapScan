@@ -17,6 +17,12 @@ TrapScan scans pages for AI Agent Traps, including:
 
 It runs initial detection in the browser, then uses Gemma to classify suspicious fragments and explain the threat in plain English.
 
+## Live Demo & Links
+
+- **Web App & Live Scanner**: [https://trap-scan.vercel.app/demo.html](https://trap-scan.vercel.app/demo.html)
+- **Product Landing Page**: [https://trap-scan.vercel.app](https://trap-scan.vercel.app)
+- **GitHub Repository**: [https://github.com/PuneetKumar1790/TrapScan](https://github.com/PuneetKumar1790/TrapScan)
+
 ## Why it matters
 
 AI agents are browsing, reasoning, and taking actions on behalf of users. That creates a new attack surface: the information environment itself.
