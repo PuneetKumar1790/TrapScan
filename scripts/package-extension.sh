@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# TrapScan Extension Packer
+# WebGuard AI Extension Packer
 # Bundles the dist/ folder into a distributable ZIP file
 
 set -e
@@ -8,7 +8,7 @@ set -e
 VERSION=$(grep '"version"' manifest.json | head -1 | sed 's/.*"version": "\\([^"]*\\)".*/\\1/')
 OUTPUT="trapscan-v${VERSION}.zip"
 
-echo "📦 Building TrapScan v${VERSION}..."
+echo "📦 Building WebGuard AI v${VERSION}..."
 
 # Clean and rebuild
 npm run build

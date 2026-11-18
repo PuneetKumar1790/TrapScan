@@ -88,7 +88,7 @@ export default function ReplayFeed() {
             </button>
           );
         })}
-        {!scans.length && <div className="ts-empty">No scans yet. Open a page and TrapScan will start logging events.</div>}
+        {!scans.length && <div className="ts-empty">No scans yet. Open a page and WebGuard AI will start logging events.</div>}
       </div>
     </div>
   );

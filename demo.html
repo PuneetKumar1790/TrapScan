@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TrapScan Web Demo</title>
+  <title>WebGuard AI Web Demo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -225,23 +225,23 @@
 </head>
 <body>
   <div class="app">
-    <div class="judge-bar">🔬 Live Demo — Try the 4 poisoned pages below to see TrapScan catch real AI Agent Traps in action</div>
+    <div class="judge-bar">🔬 Live Demo — Try the 4 poisoned pages below to see WebGuard AI catch real AI Agent Traps in action</div>
     <header class="header">
       <div class="brand">
-        <img class="brand-mark" src="./logo/trapscan-mark.png" alt="TrapScan logo" />
+        <img class="brand-mark" src="./logo/webguard-mark.png" alt="WebGuard AI logo" />
         <div class="brand-title-wrap">
-          <div class="brand-title">TrapScan</div>
+          <div class="brand-title">WebGuard AI</div>
           <div class="badge">Web Demo</div>
         </div>
       </div>
-      <a class="back-link" href="/" target="_blank" rel="noreferrer">← Back to TrapScan</a>
+      <a class="back-link" href="/" target="_blank" rel="noreferrer">← Back to WebGuard AI</a>
     </header>
 
     <main>
       <section class="hero">
         <h1>Scan any URL for AI Agent Traps</h1>
         <div class="subtext">
-          Enter any public URL. TrapScan fetches the page server-side, runs 6 detection algorithms, and uses Gemma 4 AI to classify every threat found.
+          Enter any public URL. WebGuard AI fetches the page server-side, runs 6 detection algorithms, and uses Gemma 4 AI to classify every threat found.
         </div>
 
         <div class="input-row">
@@ -671,7 +671,7 @@
     }
 
     function buildPrompt(findings, pageContext) {
-      const fullPrompt = `You are TrapScan, an AI security analyzer specializing in detecting "AI Agent Traps" — adversarial content embedded in web pages designed to manipulate, deceive, or exploit AI agents browsing on behalf of users.
+      const fullPrompt = `You are WebGuard AI, an AI security analyzer specializing in detecting "AI Agent Traps" — adversarial content embedded in web pages designed to manipulate, deceive, or exploit AI agents browsing on behalf of users.
 
 Your task: Analyze the suspicious patterns detected on this web page and classify them.
 
@@ -883,12 +883,12 @@ Do not include any text outside the JSON. Do not use markdown code fences.`;
 
     function downloadReport(result, pageContext) {
       const findings = result.findings || [];
-      const html = `<!doctype html><html><head><meta charset="utf-8"><title>TrapScan Report</title><style>body{font-family:Inter,Arial,sans-serif;padding:24px;background:#0A0A0A;color:#F5F5F5}h1,h2{margin:0 0 12px}p,li{color:#A1A1AA;line-height:1.6}.card{background:#111;border:1px solid #222;border-radius:12px;padding:16px;margin:16px 0}.pill{display:inline-block;padding:4px 8px;border-radius:999px;margin-right:8px;color:#fff;font-size:12px}</style></head><body><h1>TrapScan Report</h1><div class="card"><h2>${escapeHtml(pageContext.title || pageContext.url || '')}</h2><p>${escapeHtml(pageContext.url || '')}</p><p>Overall risk: ${escapeHtml(String(result.overallRiskScore ?? 0))}/10</p><p>${escapeHtml(result.overallSummary || '')}</p></div>${findings.map((finding) => `<div class="card"><div><span class="pill" style="background:${escapeHtml(getCategoryMeta(finding.category).color)}">${escapeHtml(getCategoryMeta(finding.category).label)}</span><span class="pill" style="background:#222">${escapeHtml(String(finding.riskScore))}/10</span></div><p>${escapeHtml(finding.explanation || '')}</p><p>${escapeHtml(finding.potentialDamage || '')}</p></div>`).join('')}</body></html>`;
+      const html = `<!doctype html><html><head><meta charset="utf-8"><title>WebGuard AI Security Report</title><style>body{font-family:Inter,Arial,sans-serif;padding:24px;background:#0A0A0A;color:#F5F5F5}h1,h2{margin:0 0 12px}p,li{color:#A1A1AA;line-height:1.6}.card{background:#111;border:1px solid #222;border-radius:12px;padding:16px;margin:16px 0}.pill{display:inline-block;padding:4px 8px;border-radius:999px;margin-right:8px;color:#fff;font-size:12px}</style></head><body><h1>WebGuard AI Security Report</h1><div class="card"><h2>${escapeHtml(pageContext.title || pageContext.url || '')}</h2><p>${escapeHtml(pageContext.url || '')}</p><p>Overall risk: ${escapeHtml(String(result.overallRiskScore ?? 0))}/10</p><p>${escapeHtml(result.overallSummary || '')}</p></div>${findings.map((finding) => `<div class="card"><div><span class="pill" style="background:${escapeHtml(getCategoryMeta(finding.category).color)}">${escapeHtml(getCategoryMeta(finding.category).label)}</span><span class="pill" style="background:#222">${escapeHtml(String(finding.riskScore))}/10</span></div><p>${escapeHtml(finding.explanation || '')}</p><p>${escapeHtml(finding.potentialDamage || '')}</p></div>`).join('')}</body></html>`;
       const blob = new Blob([html], { type: 'text/html' });
       const href = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = href;
-      a.download = `trapscan-report-${Date.now()}.html`;
+      a.download = `webguard-report-${Date.now()}.html`;
       a.click();
       setTimeout(() => URL.revokeObjectURL(href), 1000);
     }

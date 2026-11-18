@@ -116,7 +116,7 @@ function doInjectOverlay(result, score) {
     <div class="ts-overlay-head">
       <div class="ts-brand">
         <span class="ts-live-dot"></span>
-        <span>TrapScan</span>
+        <span>WebGuard AI</span>
       </div>
       <button class="ts-close" aria-label="Close">×</button>
     </div>

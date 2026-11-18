@@ -4,7 +4,7 @@ import LiveFeed from "./components/LiveFeed.jsx";
 import ReplayFeed from "./components/ReplayFeed.jsx";
 import { getRiskLevel } from "../config/patterns.js";
 import { generateReport } from "../utils/reporter.js";
-import logoMark from "../logo/trapscan-mark.png";
+import logoMark from "../logo/webguard-mark.png";
 
 const TABS = ["Scan", "Feed", "History", "Settings"];
 const isExtensionContext = globalThis.location?.protocol === "chrome-extension:";
@@ -81,7 +81,7 @@ export default function App() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `trapscan-report-${Date.now()}.html`;
+    a.download = `webguard-report-${Date.now()}.html`;
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -117,7 +117,7 @@ export default function App() {
       <header className="ts-header">
         <div className="ts-brand-row">
           <div>
-            <div className="ts-brand-title">TrapScan</div>
+            <div className="ts-brand-title">WebGuard AI</div>
             <div className="ts-brand-subtitle">AI Agent Trap Detector</div>
           </div>
           <div className="ts-brand-badge">v1.0.0</div>
@@ -139,7 +139,7 @@ export default function App() {
             )}
             {loading && !scan ? (
               <div className="ts-loading">
-                <img src={logoMark} alt="TrapScan" className="ts-shield-img" />
+                <img src={logoMark} alt="WebGuard AI" className="ts-shield-img" />
                 <div className="ts-loading-title">Analyzing page...</div>
                 <div className="ts-progress"><span /></div>
               </div>
@@ -157,7 +157,7 @@ export default function App() {
                       <div className="ts-ai-used"><span className="ts-ai-dot" />Analyzed by Gemma 4 · Google AI Studio</div>
                     ) : scan?.apiAnalysisUnavailable ? (
                       <div className="ts-warning-banner ts-warning-ai">
-                        ⚠️ AI analysis was unavailable, so TrapScan used local detection only.
+                        ⚠️ AI analysis was unavailable, so WebGuard AI used local detection only.
                       </div>
                     ) : aiAnalysisMissing ? (
                       <div className="ts-warning-banner ts-warning-ai">
@@ -184,7 +184,7 @@ export default function App() {
               </>
             ) : (
               <div className="ts-loading">
-                <img src={logoMark} alt="TrapScan" className="ts-shield-img" />
+                <img src={logoMark} alt="WebGuard AI" className="ts-shield-img" />
                 <div className="ts-loading-title">No scan available yet</div>
                 <div className="ts-loading-subtitle">Open a page to trigger detection.</div>
               </div>
@@ -225,7 +225,7 @@ export default function App() {
             </div>
 
             <a className="ts-link" href="https://deepmind.google/discover/blog/ai-agent-traps/" target="_blank" rel="noreferrer">View research paper</a>
-            <div className="ts-version">TrapScan v1.0.0 · Based on Franklin et al., 2025</div>
+            <div className="ts-version">WebGuard AI v1.0.0 · Based on Franklin et al., 2025</div>
           </section>
         )}
       </main>

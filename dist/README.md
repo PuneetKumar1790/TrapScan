@@ -1,170 +1,141 @@
-# TrapScan
+# WebGuard AI
 
-> The web is no longer safe for AI agents.
+> **AI-Powered Web Security System for Detecting Adversarial Content Targeting AI Agents**
 
-TrapScan is a browser-native defense layer for AI agents. It detects adversarial content before your agent gets hijacked, combining local pattern detection with Gemma-powered classification for suspicious findings.
+[![Software Engineering Project](https://img.shields.io/badge/Course-Software%20Engineering%20Project-blue.svg)](#academic-project-details)
+[![University of Delhi](https://img.shields.io/badge/Institution-Deen%20Dayal%20Upadhyaya%20College%20(DU)-red.svg)](#academic-project-details)
+[![Manifest V3](https://img.shields.io/badge/Chrome%20Extension-Manifest%20V3-brightgreen.svg)](https://developer.chrome.com/docs/extensions/mv3/)
+[![Gemma AI](https://img.shields.io/badge/Semantic%20Classifier-Gemma%204%20AI-orange.svg)](https://ai.google.dev/)
 
-## What it does
+---
 
-TrapScan scans pages for AI Agent Traps, including:
+## 🎓 Academic Project Details
 
-- Content injection
-- Semantic manipulation
-- Cognitive state attacks
-- Behavioral control
-- Systemic traps
-- Human-in-the-loop attacks
+* **Institution:** Department of Computer Science, Deen Dayal Upadhyaya College (University of Delhi), Sector-3, Dwarka, New Delhi – 110078
+* **Course:** Bachelor of Science (Hons.) Computer Science
+* **Paper:** Software Engineering (Academic Session: 2026–2027 | **Semester V**)
+* **Supervisor / Guide:** **Mr. Anil Kumar**, Associate Professor, Department of Computer Science
+* **Date of Submission:** 19 Nov 2026
 
-It runs initial detection in the browser, then uses Gemma to classify suspicious fragments and explain the threat in plain English.
+### 👥 Project Team Members (In Ascending Roll Number Order):
+1. **Krishna Kumar** — Roll No: `24HCS4145`
+2. **Prashansa Bhatia** — Roll No: `24HCS4157`
+3. **Puneet Kumar** — Roll No: `24HCS4162`
+4. **Tannu** — Roll No: `24HCS4190`
 
-## Live Demo & Links
+---
 
-- **Web App & Live Scanner**: [https://trap-scan.vercel.app/demo.html](https://trap-scan.vercel.app/demo.html)
-- **Product Landing Page**: [https://trap-scan.vercel.app](https://trap-scan.vercel.app)
-- **GitHub Repository**: [https://github.com/PuneetKumar1790/TrapScan](https://github.com/PuneetKumar1790/TrapScan)
+## 📌 Problem Statement & Threat Landscape
 
-## Why it matters
+Modern web browsers are increasingly running autonomous **AI Agents** (Perplexity Comet, Microsoft Copilot, Claude Computer Use, OpenAI Operator) that navigate the DOM, summarize web articles, and click buttons. While human users perceive the rendered visual webpage, AI agents read the underlying DOM tree, accessibility attributes, scripts, and metadata.
 
-AI agents are browsing, reasoning, and taking actions on behalf of users. That creates a new attack surface: the information environment itself.
+Traditional web security safeguards (CSP, SOP, WAF, XSS sanitizers) only protect human users against binary script execution; **they fail completely against Natural Language Prompt Injections**. Attackers can embed hidden instructions in ordinary web content to trick AI agents into leaking session cookies, exfiltrating browsing history, or executing unintended actions.
 
-TrapScan is built for that reality.
+### Real-World Case Study (Perplexity Comet Security Audit)
+In 2025, security researchers exposed a vulnerability in Perplexity's Comet browser assistant where attackers hid adversarial prompts in invisible CSS containers (`display: none; opacity: 0; font-size: 0px; position: absolute; left: -9999px;`). Comet summarized the page, ingested the hidden command as higher-priority instructions, and transmitted private session tokens to an external collector server.
 
-## Architecture
+**WebGuard AI** resolves this vulnerability by functioning as a client-side, pre-execution security firewall inside Google Chrome. WebGuard AI intercepts webpage content and verifies it *before* any visiting AI browser agent is permitted to read or interact with it.
 
-![TrapScan Architecture](./logo/architecture.png)
+---
 
-TrapScan operates in three layers:
+## 🛡️ Core Capabilities
 
-**Layer 1 — Content Script** runs on every page at document idle. 
-Captures raw HTML, CSS, metadata and DOM. Runs 6 detection algorithms 
-locally — no data leaves the browser.
+WebGuard AI inspects webpage documents for adversarial AI traps across major categories:
+- **Content Injection:** Prompt overrides, system prompt impersonation, and role hijacking.
+- **Semantic Manipulation:** Camouflaged text matching background colors ($\Delta < 8$), microscopic font sizes ($< 1\text{px}$), and zero opacity.
+- **Cognitive State Hijacking:** Recursive loops, memory exhaustion directives, and context window pollution.
+- **Behavioral Control:** Unauthorized API dispatches, forced form submissions, and automated clickjacking.
 
-**Layer 2 — Service Worker** receives suspicious fragments via 
-chrome.runtime.sendMessage(). Reads Gemma 4 API key from 
-chrome.storage.local and calls gemma-4-26b-a4b-it via Google AI Studio. 
-Updates toolbar badge in real time.
+---
 
-**Layer 3 — Popup UI** (React) renders threat cards, risk score, 
-live feed, and scan history. Generates downloadable HTML audit reports.
+## 🏛️ System Architecture
 
-**Web Demo** adds a Vercel serverless function that fetches URLs 
-server-side to bypass CORS, then runs the same detection pipeline 
-client-side — no extension install needed.
+WebGuard AI implements a **Three-Tier Pre-Execution Sandbox Architecture**:
 
-## Core features
+```
++-----------------------------------------------------------------------------------+
+|                            TIER 1: PRESENTATION LAYER                             |
+|  - React 18 Chrome Extension Popup Dashboard                                      |
+|  - Real-Time Quantitative Risk Meter (1-10)                                       |
+|  - Audit Log Viewer & JSON Report Exporter                                        |
++-----------------------------------------------------------------------------------+
+                                         |
+                                         v  (Chrome Runtime Messaging API)
++-----------------------------------------------------------------------------------+
+|                       TIER 2: BROWSER CLIENT-SIDE AGENT                           |
+|  [Content Script (detector.js)]                                                   |
+|  - Visual Concealment Engine (Computed CSS, Opacity, Coordinates, Zero Dimensions)|
+|  - Structural Node Parser (HTML Comments, ARIA labels, JSON-LD Schema)            |
+|  - Keyword & Pattern Matcher (Prompt Injection Dictionary)                       |
+|  - IndexedDB Audit Persistence                                                    |
++-----------------------------------------------------------------------------------+
+                                         |
+                                         v  (Encrypted HTTPS REST JSON API)
++-----------------------------------------------------------------------------------+
+|                        TIER 3: AI SEMANTIC REASONING ENGINE                       |
+|  [Background Service Worker & Cloud AI Gateway]                                   |
+|  - Gemma 4 Language Model Inference Pipeline                                     |
+|  - Contextual Intent Classifier (Content Injection vs Behavioral Control)         |
+|  - Confidence Scorer & Normalizer                                                |
++-----------------------------------------------------------------------------------+
+```
 
-- Real-time page scanning
-- Local pattern matching in the content script
-- Gemma-based threat classification
-- Risk scores from 1–10
-- Plain-English explanations
-- Downloadable scan reports
-- Scan history and stats
-- Chrome extension popup with Scan, Feed, History, and Settings
+---
 
-## CS concepts used
+## 🔬 Software Engineering Metrics & Verification
 
-TrapScan combines several core computer science concepts:
+* **Process Model:** Linear Sequential Model with Prototyping (V-Model).
+* **Function Point (FP) Analysis:**
+  $$\text{UFP} = 72,\quad \sum F_i = 50,\quad \text{VAF} = 1.15 \implies \mathbf{FP = 83}$$
+* **COCOMO Estimation (Semi-Detached):**
+  $$\text{Code Size} \approx 4.15\text{ KLOC},\quad \text{Effort} = 14.77\text{ Person-Months},\quad \text{Schedule} = 6.42\text{ Months}$$
+  $$\text{Recommended Team Size} \approx 2.3\text{ to }4\text{ Software Engineers (Matching the 4-student team)}$$
+* **White-Box Testing (Basis Path Testing):**
+  - Analyzed Module: `colorsClose(c1, c2)` in `detector.js`
+  - Cyclomatic Complexity: $\mathbf{V(G) = 12 - 9 + 2(1) = 5}$
+  - Basis Path Set: **5 linearly independent paths**, verified with a complete white-box test execution matrix.
 
-- DOM traversal and CSS computed style analysis to detect visual camouflage attacks such as colour matching and negative positioning
-- Regex pattern matching across raw HTML to catch comment injection and jailbreak keyword detection
-- JSON-LD schema parsing to identify cognitive state attacks embedded in structured data
-- Chrome Manifest V3 service worker architecture to maintain event-driven background processing across tabs using chrome.storage.local and IndexedDB
-- Gemma 4 large language model reasoning for semantic understanding, complementing local signature matching with intent detection
+---
 
-Together, these techniques help TrapScan stay robust against both known attack patterns and novel variations.
+## 🚀 Installation & Setup
 
-## Research-backed foundation
+### 1. Prerequisites
+- Node.js (v18+ or v20+)
+- Google Chrome browser
 
-TrapScan is inspired by the AI Agent Traps research from Google DeepMind researchers Franklin et al. (2025).
-
-Research paper:
-https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6372438&trk=feed-detail_comments-list_comment-text
-
-## Installation
-
-### 1. Install dependencies
-
+### 2. Install Dependencies
 ```bash
 npm install
 ```
 
-### 2. Configure environment
-
-Copy the example env file and add your Gemma API key:
-
-```bash
-cp .env.example .env
-```
-
-Set these values for the default Gemma model:
-
-```dotenv
-VITE_MODEL_PROVIDER=google
-VITE_MODEL_NAME=gemma-4-26b-a4b-it
-VITE_MODEL_BASE_URL=https://generativelanguage.googleapis.com
-VITE_GEMMA_API_KEY=your_api_key_here
-```
-
-### 3. Build the extension
-
+### 3. Build the Extension
 ```bash
 npm run build
 ```
+The production bundle is compiled into the `dist/` directory.
 
-### 4. Load in Chrome
+### 4. Load into Google Chrome
+1. Open Chrome and navigate to `chrome://extensions`.
+2. Toggle **Developer mode** (top-right corner).
+3. Click **Load unpacked** and select the `dist/` folder (or project root).
+4. WebGuard AI is now active and monitoring tabs in real time.
 
-- Open `chrome://extensions`
-- Enable Developer mode
-- Click Load unpacked
-- Select the `dist/` folder
+---
 
-The Add to Chrome buttons on the site open the GitHub repo. Use the steps above to load the unpacked `dist/` build into Chrome.
+## 🧪 Testing & Demos
 
-## Using the extension
+You can test WebGuard AI against deliberately poisoned sample pages located in `demo-pages/`:
+- `demo-pages/content-injection.html` — Hidden prompt overwriting agent instructions.
+- `demo-pages/behavioural-control.html` — Invisible form and exfiltration API payload.
+- `demo-pages/semantic-manipulation.html` — Microscopic and color-camouflaged text.
+- `demo-pages/cognitive-state.html` — Structured JSON-LD cognitive state attack.
 
-- Open any page or one of the included demo pages
-- TrapScan scans for suspicious patterns automatically
-- Open the popup to review detections, history, and settings
-- Add your Gemma API key in Settings if needed
+---
 
-## Demo pages
+## 📜 References
 
-The repo includes sample adversarial pages for testing:
-
-- `demo-pages/content-injection.html`
-- `demo-pages/behavioural-control.html`
-- `demo-pages/cognitive-state.html`
-- `demo-pages/semantic-manipulation.html`
-
-## Gemma model
-
-TrapScan is configured to use:
-
-- Provider: `google`
-- Model: `gemma-4-26b-a4b-it`
-- Base URL: `https://generativelanguage.googleapis.com`
-
-If you change the model values, rebuild the project after updating `.env`.
-
-## API key setup
-
-Get a Gemma API key from Google AI Studio and paste it into TrapScan Settings.
-
-For local testing, store it in `.env` as `VITE_GEMMA_API_KEY`.
-
-## Project layout
-
-- `background/` — service worker and message routing
-- `content/` — page-level detection logic
-- `popup/` — React-based extension UI
-- `demo-pages/` — adversarial test pages
-- `utils/` — detection, Gemma integration, reporting, storage
-
-## Build output
-
-The production bundle is generated in `dist/` and is ready to load as an unpacked Chrome extension.
-
-## License
-
-MIT
+1. Pressman, R. S., & Maxim, B. R. (2020). *Software Engineering: A Practitioner’s Approach* (9th ed.). McGraw-Hill Education.
+2. McCabe, T. J. (1976). *A Complexity Measure*. IEEE Transactions on Software Engineering, SE-2(4), 308–320.
+3. IEEE Computer Society. (1998). *IEEE Recommended Practice for Software Requirements Specifications* (IEEE Std 830-1998).
+4. Greshake, K., et al. (2023). *Indirect Prompt Injection Threats on LLMs*. ACM AISEC '23.
+5. Brave Software Security Research. (2025). *Security Audit of Autonomous Browser Agents*.

@@ -1,6 +1,7 @@
 {
-  "name": "trapscan",
+  "name": "webguard-ai",
   "version": "1.0.0",
+  "description": "AI-Powered Web Security System for Detecting Adversarial Content Targeting AI Agents",
   "private": true,
   "type": "module",
   "scripts": {

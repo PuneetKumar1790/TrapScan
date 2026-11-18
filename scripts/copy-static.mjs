@@ -14,7 +14,7 @@ async function main() {
   await mkdirAsync("dist", { recursive: true }).catch(() => {});
   await copyIfExists("manifest.json", "dist/manifest.json");
   await copyIfExists("icons", "dist/icons");
-  await copyIfExists("logo/trapscan-mark.png", "dist/logo/trapscan-mark.png");
+  await copyIfExists("logo/webguard-mark.png", "dist/logo/webguard-mark.png");
   await copyIfExists("demo-pages", "dist/demo-pages");
   await copyIfExists("demo.html", "dist/demo.html");
   await copyIfExists(".env.example", "dist/.env.example");

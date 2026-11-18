@@ -48,7 +48,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         );
         const apiKey = stored.GEMINI_API_KEY || "";
 
-        console.log("TrapScan SW: API key present?", apiKey.length > 10);
+        console.log("WebGuard AI SW: API key present?", apiKey.length > 10);
 
         const payload = message?.payload || {};
         const safeFindings = Array.isArray(payload.findings) ? payload.findings : [];
@@ -90,7 +90,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             );
             if (result) result.aiAnalysisUsed = true;
           } catch (aiError) {
-            console.error("TrapScan SW: AI error", aiError);
+            console.error("WebGuard AI SW: AI error", aiError);
             apiErrorMessage = aiError.message;
             result = null;
           }
@@ -177,7 +177,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({ success: true });
 
       } catch (err) {
-        console.error("TrapScan SW: scan error", err);
+        console.error("WebGuard AI SW: scan error", err);
         sendResponse({ success: false, error: err.message });
       }
     })();
@@ -228,7 +228,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           sendResponse?.(null);
       }
     } catch (error) {
-      console.error("TrapScan message handler failed", error);
+      console.error("WebGuard AI message handler failed", error);
       sendResponse?.({ ok: false, error: String(error) });
     }
   })();

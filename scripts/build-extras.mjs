@@ -17,7 +17,7 @@ await build({
       input: "content/content-script.js",
       output: {
         format: "iife",
-        name: "TrapScanContent",
+        name: "WebGuardAIContent",
         inlineDynamicImports: true,
         entryFileNames: "content/content-script.js"
       }
@@ -33,7 +33,7 @@ await build({
       input: "background/service-worker.js",
       output: {
         format: "iife",
-        name: "TrapScanWorker",
+        name: "WebGuardAIWorker",
         inlineDynamicImports: true,
         entryFileNames: "background/service-worker.js"
       }

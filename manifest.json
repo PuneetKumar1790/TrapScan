@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "TrapScan — AI Agent Trap Detector",
+  "name": "WebGuard AI — AI Agent Threat & Trap Detector",
+  "short_name": "WebGuard AI",
   "version": "1.0.0",
-  "description": "Detects adversarial content designed to hijack AI agents browsing the web.",
+  "description": "AI-Powered Web Security System for Detecting Adversarial Content Targeting AI Agents.",
   "permissions": ["activeTab", "storage", "scripting", "tabs"],
   "host_permissions": ["<all_urls>"],
   "background": {
@@ -18,14 +19,14 @@
   "action": {
     "default_popup": "popup/index.html",
     "default_icon": {
-      "16": "logo/trapscan-mark.png",
-      "48": "logo/trapscan-mark.png",
-      "128": "logo/trapscan-mark.png"
+      "16": "logo/webguard-mark.png",
+      "48": "logo/webguard-mark.png",
+      "128": "logo/webguard-mark.png"
     }
   },
   "icons": {
-    "16": "logo/trapscan-mark.png",
-    "48": "logo/trapscan-mark.png",
-    "128": "logo/trapscan-mark.png"
+    "16": "logo/webguard-mark.png",
+    "48": "logo/webguard-mark.png",
+    "128": "logo/webguard-mark.png"
   }
 }

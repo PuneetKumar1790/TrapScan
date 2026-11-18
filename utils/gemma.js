@@ -107,7 +107,7 @@ function buildPrompt(findings, pageContext) {
     ]
   }, null, 2);
 
-  return `You are TrapScan, a security analyzer. Return ONLY a valid JSON object matching the required structure below. No markdown, no commentary, no additional text.
+  return `You are WebGuard AI, a security analyzer. Return ONLY a valid JSON object matching the required structure below. No markdown, no commentary, no additional text.
 
 REQUIRED JSON STRUCTURE:
 ${jsonSchema}
@@ -137,7 +137,7 @@ export async function classifyWithGemma(findings, pageContext, apiKey) {
     if (!apiKey && provider === "google") return buildFallbackResult(safeFindings);
 
     const prompt = buildPrompt(safeFindings, pageContext);
-    console.log("TrapScan: calling model", model, "with", safeFindings.length, "findings");
+    console.log("WebGuard AI: calling model", model, "with", safeFindings.length, "findings");
 
     let response;
     if (provider === "openai") {
@@ -151,7 +151,7 @@ export async function classifyWithGemma(findings, pageContext, apiKey) {
         body: JSON.stringify({
           model,
           messages: [
-            { role: "system", content: "You are TrapScan, an AI security analyzer. Return only valid JSON." },
+            { role: "system", content: "You are WebGuard AI, an AI security analyzer. Return only valid JSON." },
             { role: "user", content: prompt }
           ],
           temperature: 0,
@@ -175,7 +175,7 @@ export async function classifyWithGemma(findings, pageContext, apiKey) {
       });
 
       if (response.ok) {
-        console.log("TrapScan: model used", model);
+        console.log("WebGuard AI: model used", model);
       }
     }
 
